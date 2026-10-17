@@ -20,7 +20,7 @@ export default async function AuthPage({
     <>
       <SiteHeader />
       <main className="container mx-auto flex min-h-[calc(100vh-80px)] items-center justify-center p-4">
-        <AuthView path={path} />
+        <AuthView path={path} redirectTo={path === "sign-out" ? "/" : undefined} />
       </main>
     </>
   );

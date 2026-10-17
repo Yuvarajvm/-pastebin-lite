@@ -57,7 +57,7 @@ export default function AccountSessionsPage() {
                 expiresAt: s.expiresAt,
                 userAgent: s.userAgent,
                 ipAddress: s.ipAddress,
-                isCurrent: s.id === session?.session?.id || s.token === session?.session?.token || true
+                isCurrent: (session?.session?.id ? s.id === session.session.id : false) || (session?.session?.token ? s.token === session.session.token : false) || list.length === 1
               }))
             );
             return;
@@ -125,6 +125,23 @@ export default function AccountSessionsPage() {
     }
   }
 
+  const [loggingOutCurrent, setLoggingOutCurrent] = useState(false);
+
+  async function handleSignOutDevice() {
+    if (loggingOutCurrent) return;
+    setLoggingOutCurrent(true);
+    try {
+      await authClient.signOut().catch(() => {});
+    } catch {}
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+    } catch {}
+    window.location.href = "/";
+  }
+
   if (loading) {
     return (
       <>
@@ -159,6 +176,16 @@ export default function AccountSessionsPage() {
             <Link href="/my-pastes" className="primary-button" style={{ background: "transparent", color: "var(--text)", border: "1px solid var(--border)" }}>
               ← My Pastes
             </Link>
+            <button
+              type="button"
+              onClick={handleSignOutDevice}
+              disabled={loggingOutCurrent}
+              className="logout-button"
+              style={{ padding: "8px 14px", fontSize: "14px" }}
+              title="Sign out this device"
+            >
+              {loggingOutCurrent ? "Logging out…" : "Log out"}
+            </button>
           </div>
         </div>
 

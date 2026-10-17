@@ -92,4 +92,24 @@ describe("Neon Auth Integration", () => {
     // Cleanup User B's paste
     await deleteUserPaste(pasteB.id, userB_Id);
   });
+
+  it("clears authentication cookies on POST /api/auth/logout", async () => {
+    const { POST } = await import("@/app/api/auth/logout/route");
+    const res = await POST();
+    expect(res.status).toBe(200);
+
+    const data = await res.json();
+    expect(data.success).toBe(true);
+
+    const setCookies = res.headers.getSetCookie();
+    expect(setCookies.length).toBeGreaterThan(0);
+
+    const sessionTokenCookie = setCookies.find((c) => c.includes("__Secure-neon-auth.session_token"));
+    expect(sessionTokenCookie).toBeDefined();
+    expect(sessionTokenCookie).toContain("Max-Age=0");
+
+    const localDataCookie = setCookies.find((c) => c.includes("__Secure-neon-auth.local.session_data"));
+    expect(localDataCookie).toBeDefined();
+    expect(localDataCookie).toContain("Max-Age=0");
+  });
 });

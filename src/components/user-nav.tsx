@@ -11,21 +11,24 @@ export function UserNav() {
   const [loggingOut, setLoggingOut] = useState(false);
 
   async function handleLogout() {
+    if (loggingOut) return;
     setLoggingOut(true);
     try {
-      await authClient.signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            router.push("/");
-            router.refresh();
-          }
-        }
+      await authClient.signOut().catch(() => {});
+    } catch {
+      // Continue even if client signOut fails
+    }
+
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
       });
     } catch {
-      setLoggingOut(false);
-    } finally {
-      setLoggingOut(false);
+      // Continue even if network request fails
     }
+
+    window.location.href = "/";
   }
 
   if (isPending) {
