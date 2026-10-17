@@ -2,7 +2,7 @@ import { createNeonAuth } from "@neondatabase/auth/next/server";
 
 const baseUrl =
   process.env.NEON_AUTH_BASE_URL ||
-  "https://ep-flat-band-azhwqw1x.neonauth.c-3.ap-southeast-1.aws.neon.tech/neondb/auth";
+  "https://ep-dawn-sunset-azr6rgd1.neonauth.c-3.ap-southeast-1.aws.neon.tech/neondb/auth";
 
 const cookieSecret =
   process.env.NEON_AUTH_COOKIE_SECRET ||
