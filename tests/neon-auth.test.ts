@@ -93,8 +93,11 @@ describe("Neon Auth Integration", () => {
     await deleteUserPaste(pasteB.id, userB_Id);
   });
 
-  it("clears authentication cookies on POST /api/auth/logout", async () => {
-    const { POST } = await import("@/app/api/auth/logout/route");
+  it("clears authentication cookies on POST /api/auth/logout with Secure flag on __Secure- cookies", async () => {
+    const { POST, KNOWN_AUTH_COOKIES } = await import("@/app/api/auth/logout/route");
+    expect(KNOWN_AUTH_COOKIES).toContain("__Secure-neon-auth.state");
+    expect(KNOWN_AUTH_COOKIES).toContain("__Secure-neon-auth.pkce_code_verifier");
+
     const res = await POST();
     expect(res.status).toBe(200);
 
@@ -107,9 +110,36 @@ describe("Neon Auth Integration", () => {
     const sessionTokenCookie = setCookies.find((c) => c.includes("__Secure-neon-auth.session_token"));
     expect(sessionTokenCookie).toBeDefined();
     expect(sessionTokenCookie).toContain("Max-Age=0");
+    expect(sessionTokenCookie).toContain("Secure");
 
     const localDataCookie = setCookies.find((c) => c.includes("__Secure-neon-auth.local.session_data"));
     expect(localDataCookie).toBeDefined();
     expect(localDataCookie).toContain("Max-Age=0");
+    expect(localDataCookie).toContain("Secure");
+  });
+
+  it("resolves canonical origins via getAppOrigin helper", async () => {
+    const { getAppOrigin } = await import("@/lib/api");
+    const req = new Request("https://preview-123.vercel.app/api/pastes", {
+      headers: { host: "custom.domain.com", "x-forwarded-proto": "https" }
+    });
+    expect(getAppOrigin(req)).toBe("https://custom.domain.com");
+  });
+
+  it("allows public paste routes through proxy without login redirect", async () => {
+    const { proxy } = await import("@/proxy");
+    const { NextRequest } = await import("next/server");
+    const req = new NextRequest("http://localhost:3000/p/ANwt7yq7BgCa");
+    const res = await proxy(req);
+    expect(res.status).toBe(200);
+  });
+
+  it("redirects unauthenticated access to /my-pastes through proxy", async () => {
+    const { proxy } = await import("@/proxy");
+    const { NextRequest } = await import("next/server");
+    const req = new NextRequest("http://localhost:3000/my-pastes");
+    const res = await proxy(req);
+    expect(res.status).toBe(307);
+    expect(res.headers.get("location")).toContain("/auth/sign-in");
   });
 });

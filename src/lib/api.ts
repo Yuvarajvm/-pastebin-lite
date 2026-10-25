@@ -15,3 +15,28 @@ export function serializePaste(paste: Paste) {
     views_count: paste.viewsCount
   };
 }
+
+export function getAppOrigin(request?: Request): string {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL.replace(/\/+$/, "");
+  }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL.replace(/\/+$/, "")}`;
+  }
+  if (request) {
+    const host = request.headers.get("x-forwarded-host") || request.headers.get("host");
+    const proto = request.headers.get("x-forwarded-proto") || "https";
+    if (host) {
+      return `${proto}://${host}`;
+    }
+    try {
+      return new URL(request.url).origin;
+    } catch {
+      // Fall through
+    }
+  }
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
+  return "";
+}

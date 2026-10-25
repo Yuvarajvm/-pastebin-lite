@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { Paste } from "@/lib/db/schema";
+import { getAppOrigin } from "@/lib/api";
 
 type UserPastesListProps = {
   initialPastes: Paste[];
@@ -15,7 +16,8 @@ export function UserPastesList({ initialPastes }: UserPastesListProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function copyLink(id: string) {
-    const url = `${window.location.origin}/p/${id}`;
+    const origin = getAppOrigin();
+    const url = `${origin}/p/${id}`;
     await navigator.clipboard.writeText(url);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 1800);

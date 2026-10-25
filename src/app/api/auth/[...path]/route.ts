@@ -13,7 +13,10 @@ function wrapHandler(method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH") {
 
   return async function (request: NextRequest | Request, context: any) {
     const incomingOrigin = request.headers.get("origin") || "";
-    const trustedOrigin = process.env.NEON_AUTH_TRUSTED_ORIGIN || "http://localhost:3000";
+    const trustedOrigin =
+      process.env.NEON_AUTH_TRUSTED_ORIGIN ||
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "") ||
+      "http://localhost:3000";
 
     const hasBody = method === "POST" || method === "PUT" || method === "PATCH";
     const bodyText = hasBody ? await request.text() : null;
@@ -22,6 +25,18 @@ function wrapHandler(method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH") {
       const h = new Headers(request.headers);
       if (originOverride) {
         h.set("origin", originOverride);
+        if (h.has("referer")) {
+          try {
+            const refUrl = new URL(h.get("referer")!);
+            const targetOriginUrl = new URL(originOverride);
+            refUrl.protocol = targetOriginUrl.protocol;
+            refUrl.host = targetOriginUrl.host;
+            refUrl.port = targetOriginUrl.port;
+            h.set("referer", refUrl.toString());
+          } catch {
+            h.set("referer", originOverride);
+          }
+        }
       }
       return new Request(request.url, {
         method,
@@ -38,7 +53,7 @@ function wrapHandler(method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH") {
         const clone = res.clone();
         const json = await clone.json();
         if (json?.code === "INVALID_ORIGIN" || json?.message?.toLowerCase().includes("origin")) {
-          // Retry proxying with trusted local origin to permit server-to-server validation
+          // Retry proxying with trusted origin to permit server-to-server validation
           res = await original(makeRequest(trustedOrigin), context);
         }
       } catch {

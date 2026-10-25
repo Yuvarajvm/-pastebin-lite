@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createPaste } from "@/lib/paste-service";
 import { createPasteSchema } from "@/lib/validation";
-import { noStoreHeaders } from "@/lib/api";
+import { noStoreHeaders, getAppOrigin } from "@/lib/api";
 import { auth } from "@/lib/neon-auth/server";
 
 export const dynamic = "force-dynamic";
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   }
 
   const paste = await createPaste(parsed.data, userId);
-  const origin = new URL(request.url).origin;
+  const origin = getAppOrigin(request);
 
   return NextResponse.json(
     {
