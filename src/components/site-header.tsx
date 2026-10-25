@@ -13,7 +13,8 @@ export function SiteHeader() {
         <nav aria-label="Primary navigation">
           <Link href="/">New paste</Link>
           <Link href="/my-pastes">My pastes</Link>
-          <Link href="/#how-it-works">About</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
         </nav>
         <div className="header-actions">
           <UserNav />

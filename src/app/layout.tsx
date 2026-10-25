@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Providers } from "./providers";
+import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Pastebin Lite",
-  description: "Share plain text with optional expiry limits."
+  title: "Pastebin Lite — Fast, Private Text & Code Sharing",
+  description: "Share plain text and code snippets with instant syntax highlighting, burn-after-read security, and configurable expiry limits."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -16,7 +17,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Script id="theme-init" strategy="beforeInteractive">
           {themeScript}
         </Script>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="app-layout">
+            <div className="app-content">{children}</div>
+            <SiteFooter />
+          </div>
+        </Providers>
       </body>
     </html>
   );
