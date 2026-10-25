@@ -1,5 +1,7 @@
 "use client";
 
+import { SunIcon } from "@/components/icons";
+
 export function ThemeToggle() {
   function toggle() {
     const current = document.documentElement.classList.contains("dark") ? "dark" : "light";
@@ -9,5 +11,10 @@ export function ThemeToggle() {
     document.documentElement.style.colorScheme = next;
     localStorage.setItem("pastebin-lite-theme", next);
   }
-  return <button type="button" onClick={toggle} aria-label="Toggle light and dark theme" className="theme-toggle" title="Toggle appearance"><span className="theme-icon" aria-hidden="true">◐</span><span className="theme-label">Theme</span></button>;
+  return (
+    <button type="button" onClick={toggle} aria-label="Toggle light and dark theme" className="theme-toggle" title="Toggle appearance">
+      <SunIcon className="w-3.5 h-3.5 theme-icon" />
+      <span className="theme-label">Theme</span>
+    </button>
+  );
 }

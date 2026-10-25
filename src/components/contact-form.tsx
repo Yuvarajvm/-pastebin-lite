@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { MailIcon, ClipboardCopyIcon, CheckIcon } from "@/components/icons";
 
 const ISSUE_CATEGORIES = [
-  { id: "bug", label: "🐛 Bug Report", subjectPrefix: "[Bug]" },
-  { id: "feature", label: "💡 Feature Request", subjectPrefix: "[Feature]" },
-  { id: "security", label: "🔐 Security Vulnerability", subjectPrefix: "[Security]" },
-  { id: "account", label: "👤 Account / Authentication", subjectPrefix: "[Account]" },
-  { id: "general", label: "💬 General Inquiry & Feedback", subjectPrefix: "[Inquiry]" }
+  { id: "bug", label: "Bug Report", subjectPrefix: "[Bug]" },
+  { id: "feature", label: "Feature Request", subjectPrefix: "[Feature]" },
+  { id: "security", label: "Security Vulnerability", subjectPrefix: "[Security]" },
+  { id: "account", label: "Account & Authentication", subjectPrefix: "[Account]" },
+  { id: "general", label: "General Inquiry & Feedback", subjectPrefix: "[Inquiry]" }
 ];
 
 export function ContactForm() {
@@ -151,9 +152,16 @@ export function ContactForm() {
             <button
               type="button"
               onClick={handleCopyEmail}
-              className="preview-copy-btn"
+              className="preview-copy-btn flex items-center gap-1"
             >
-              {emailCopied ? "✓ Email Copied" : "Copy Recipient Email"}
+              {emailCopied ? (
+                <>
+                  <CheckIcon className="w-3 h-3 text-emerald-500" />
+                  <span>Email Copied</span>
+                </>
+              ) : (
+                "Copy Recipient Email"
+              )}
             </button>
           </div>
           <pre className="preview-content">
@@ -165,16 +173,27 @@ export function ContactForm() {
 
         {/* Action Buttons */}
         <div className="contact-actions">
-          <button type="submit" className="primary-button email-send-btn">
-            ✉️ Open in Mail Client
+          <button type="submit" className="primary-button email-send-btn flex items-center gap-2">
+            <MailIcon className="w-4 h-4" />
+            <span>Open in Mail Client</span>
           </button>
 
           <button
             type="button"
             onClick={handleCopyTemplate}
-            className="secondary-button"
+            className="secondary-button flex items-center gap-2"
           >
-            {copied ? "✓ Copied to Clipboard!" : "📋 Copy Formatted Text"}
+            {copied ? (
+              <>
+                <CheckIcon className="w-4 h-4 text-emerald-500" />
+                <span>Copied to Clipboard</span>
+              </>
+            ) : (
+              <>
+                <ClipboardCopyIcon className="w-4 h-4" />
+                <span>Copy Formatted Text</span>
+              </>
+            )}
           </button>
         </div>
 

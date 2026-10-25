@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { Paste } from "@/lib/db/schema";
 import { getAppOrigin } from "@/lib/api";
+import { FileTextIcon } from "@/components/icons";
 
 type UserPastesListProps = {
   initialPastes: Paste[];
@@ -46,7 +47,9 @@ export function UserPastesList({ initialPastes }: UserPastesListProps) {
   if (pastes.length === 0) {
     return (
       <div className="empty-state">
-        <div className="empty-icon">📝</div>
+        <div className="empty-icon flex justify-center">
+          <FileTextIcon className="w-10 h-10 text-muted" size={40} />
+        </div>
         <h2>No pastes found</h2>
         <p>You haven&apos;t created any pastes yet while logged in.</p>
         <Link href="/" className="primary-button">

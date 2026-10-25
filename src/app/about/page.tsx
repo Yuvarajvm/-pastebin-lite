@@ -1,6 +1,17 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import type { Metadata } from "next";
+import {
+  ZapIcon,
+  PaletteIcon,
+  ClockIcon,
+  FlameIcon,
+  UserIcon,
+  TerminalIcon,
+  MailIcon,
+  GitHubIcon,
+  ExternalLinkIcon
+} from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "About — Pastebin Lite",
@@ -30,9 +41,10 @@ export default function AboutPage() {
               href="https://github.com/Yuvarajvm/-pastebin-lite"
               target="_blank"
               rel="noopener noreferrer"
-              className="secondary-button"
+              className="secondary-button flex items-center gap-1.5"
             >
-              GitHub Repository ↗
+              <span>GitHub Repository</span>
+              <ExternalLinkIcon className="w-3.5 h-3.5" />
             </a>
           </div>
         </section>
@@ -51,7 +63,8 @@ export default function AboutPage() {
               </p>
               <div className="creator-meta-links">
                 <a href="mailto:yuvarajuab@gmail.com" className="creator-link-pill">
-                  ✉️ yuvarajuab@gmail.com
+                  <MailIcon className="w-3.5 h-3.5 text-accent" />
+                  <span>yuvarajuab@gmail.com</span>
                 </a>
                 <a
                   href="https://github.com/Yuvarajvm"
@@ -59,10 +72,11 @@ export default function AboutPage() {
                   rel="noopener noreferrer"
                   className="creator-link-pill"
                 >
-                  🐙 @Yuvarajvm on GitHub
+                  <GitHubIcon className="w-3.5 h-3.5 text-accent" />
+                  <span>@Yuvarajvm on GitHub</span>
                 </a>
                 <span className="creator-link-pill">
-                  📍 Worldwide / Remote
+                  <span>Worldwide / Remote</span>
                 </span>
               </div>
             </div>
@@ -79,7 +93,9 @@ export default function AboutPage() {
 
           <div className="features-grid">
             <div className="feature-card">
-              <div className="feature-icon">⚡</div>
+              <div className="feature-icon flex items-center justify-center w-9 h-9 rounded-md bg-surface-subtle border border-border">
+                <ZapIcon className="w-5 h-5 text-accent" />
+              </div>
               <h3>Zero Bloat &amp; Clean UI</h3>
               <p>
                 No third-party advertising, trackers, or endless popups. Pastebin Lite focuses purely on your content with curated typography, harmonious light and dark modes, and instant load times.
@@ -87,7 +103,9 @@ export default function AboutPage() {
             </div>
 
             <div className="feature-card">
-              <div className="feature-icon">🎨</div>
+              <div className="feature-icon flex items-center justify-center w-9 h-9 rounded-md bg-surface-subtle border border-border">
+                <PaletteIcon className="w-5 h-5 text-accent" />
+              </div>
               <h3>Multi-Language Syntax Highlighting</h3>
               <p>
                 Includes automatic and manual syntax highlighting for JavaScript, TypeScript, Python, JSON, SQL, HTML, CSS, Markdown, Rust, Go, Bash, and Plain Text with theme-aware color palettes.
@@ -95,7 +113,9 @@ export default function AboutPage() {
             </div>
 
             <div className="feature-card">
-              <div className="feature-icon">⏳</div>
+              <div className="feature-icon flex items-center justify-center w-9 h-9 rounded-md bg-surface-subtle border border-border">
+                <ClockIcon className="w-5 h-5 text-accent" />
+              </div>
               <h3>Configurable Expiry Limits</h3>
               <p>
                 Set snippet lifetimes to 10 minutes, 1 hour, 1 day, 1 week, 1 month, or keep them forever. Once a paste expires, it is permanently inaccessible and returns a clean 404.
@@ -103,7 +123,9 @@ export default function AboutPage() {
             </div>
 
             <div className="feature-card">
-              <div className="feature-icon">🔥</div>
+              <div className="feature-icon flex items-center justify-center w-9 h-9 rounded-md bg-surface-subtle border border-border">
+                <FlameIcon className="w-5 h-5 text-accent" />
+              </div>
               <h3>Burn After Read &amp; View Caps</h3>
               <p>
                 Need to share a temporary token or sensitive snippet? Cap total allowed views (e.g., 1 view or 10 views). The moment the threshold is reached, the paste self-destructs.
@@ -111,7 +133,9 @@ export default function AboutPage() {
             </div>
 
             <div className="feature-card">
-              <div className="feature-icon">👤</div>
+              <div className="feature-icon flex items-center justify-center w-9 h-9 rounded-md bg-surface-subtle border border-border">
+                <UserIcon className="w-5 h-5 text-accent" />
+              </div>
               <h3>User Accounts &amp; Dashboard</h3>
               <p>
                 Optionally sign up or log in via Neon Auth to maintain an authenticated dashboard at <code>/my-pastes</code>. Access all your created pastes, copy URLs in one click, or delete pastes whenever needed.
@@ -119,7 +143,9 @@ export default function AboutPage() {
             </div>
 
             <div className="feature-card">
-              <div className="feature-icon">🚀</div>
+              <div className="feature-icon flex items-center justify-center w-9 h-9 rounded-md bg-surface-subtle border border-border">
+                <TerminalIcon className="w-5 h-5 text-accent" />
+              </div>
               <h3>Developer REST API</h3>
               <p>
                 Interact programmatically via <code>POST /api/pastes</code> and <code>GET /api/pastes/:id</code>. Script snippets directly from your terminal, CI/CD pipelines, or deployment workflows.

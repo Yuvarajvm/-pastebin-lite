@@ -42,19 +42,19 @@ export function UserNav() {
 
     return (
       <div className="account-nav logged-in">
-        <Link href="/account" className="user-badge" title="Account settings & security">
+        <Link href="/profile" className="user-badge" title="View your user profile">
           <span className="user-avatar" aria-hidden="true">
             {avatarLetter}
           </span>
           <span className="username-text">{displayName}</span>
         </Link>
         <Link
-          href="/account"
+          href="/profile"
           className="login-link"
           style={{ fontSize: "12px", padding: "6px 8px" }}
-          title="Account settings"
+          title="User profile & password settings"
         >
-          Settings
+          Profile
         </Link>
         <button
           type="button"

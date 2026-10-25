@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/neon-auth/client";
+import { AlertTriangleIcon, ShieldCheckIcon, CheckIcon } from "@/components/icons";
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -94,7 +95,7 @@ export function DeleteAccountModal({
         {/* Modal Header */}
         <div className="modal-header">
           <div className="modal-warning-icon" aria-hidden="true">
-            ⚠️
+            <AlertTriangleIcon className="w-5 h-5" />
           </div>
           <div>
             <h2 id="modal-headline" className="modal-title">
@@ -118,7 +119,9 @@ export function DeleteAccountModal({
           </div>
 
           <div className="anti-abuse-notice">
-            <span className="notice-icon">🛡️</span>
+            <span className="notice-icon flex items-center justify-center">
+              <ShieldCheckIcon className="w-4 h-4 text-accent" />
+            </span>
             <div>
               <strong>Free Trial Anti-Abuse Protection</strong>
               <p>
@@ -156,8 +159,9 @@ export function DeleteAccountModal({
               </span>
             )}
             {isMatch && (
-              <span className="input-feedback-success">
-                ✓ Confirmation matches. Ready to proceed.
+              <span className="input-feedback-success flex items-center gap-1">
+                <CheckIcon className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Confirmation matches. Ready to proceed.</span>
               </span>
             )}
           </div>

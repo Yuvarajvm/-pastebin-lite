@@ -1,5 +1,6 @@
 import { PasteForm } from "@/components/paste-form";
 import { SiteHeader } from "@/components/site-header";
+import { CheckIcon } from "@/components/icons";
 
 export default async function HomePage({
   searchParams
@@ -14,8 +15,9 @@ export default async function HomePage({
       <SiteHeader />
       <main className="shell composer-page">
         {isAccountDeleted && (
-          <div role="status" className="notice notice-success" style={{ margin: "0 0 24px" }}>
-            ✓ Your account has been soft-deleted and all active sessions have been terminated.
+          <div role="status" className="notice notice-success flex items-center gap-2" style={{ margin: "0 0 24px" }}>
+            <CheckIcon className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+            <span>Your account has been soft-deleted and all active sessions have been terminated.</span>
           </div>
         )}
         <section className="page-intro">

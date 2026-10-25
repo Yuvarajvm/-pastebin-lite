@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ExternalLinkIcon } from "@/components/icons";
 
 export function SiteFooter() {
   const currentYear = 2026;
@@ -37,6 +38,7 @@ export function SiteFooter() {
             <ul>
               <li><Link href="/">Create Paste</Link></li>
               <li><Link href="/my-pastes">My Dashboard</Link></li>
+              <li><Link href="/profile">User Profile</Link></li>
               <li><Link href="/about">About Pastebin Lite</Link></li>
               <li><Link href="/contact">Contact & Support</Link></li>
             </ul>
@@ -51,8 +53,10 @@ export function SiteFooter() {
                   href="https://github.com/Yuvarajvm"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="flex items-center gap-1"
                 >
-                  GitHub Profile (@Yuvarajvm) ↗
+                  <span>GitHub Profile (@Yuvarajvm)</span>
+                  <ExternalLinkIcon className="w-3 h-3" />
                 </a>
               </li>
               <li>
@@ -60,8 +64,10 @@ export function SiteFooter() {
                   href="https://github.com/Yuvarajvm/-pastebin-lite"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="flex items-center gap-1"
                 >
-                  Source Repository ↗
+                  <span>Source Repository</span>
+                  <ExternalLinkIcon className="w-3 h-3" />
                 </a>
               </li>
               <li>
@@ -69,13 +75,16 @@ export function SiteFooter() {
                   href="https://github.com/Yuvarajvm/-pastebin-lite/issues"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="flex items-center gap-1"
                 >
-                  Report an Issue ↗
+                  <span>Report an Issue</span>
+                  <ExternalLinkIcon className="w-3 h-3" />
                 </a>
               </li>
               <li>
-                <a href="mailto:yuvarajuab@gmail.com">
-                  Direct Email Inquiry ↗
+                <a href="mailto:yuvarajuab@gmail.com" className="flex items-center gap-1">
+                  <span>Direct Email Inquiry</span>
+                  <ExternalLinkIcon className="w-3 h-3" />
                 </a>
               </li>
             </ul>

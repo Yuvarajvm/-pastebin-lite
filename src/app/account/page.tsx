@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { authClient } from "@/lib/neon-auth/client";
 import { DeleteAccountModal } from "@/components/delete-account-modal";
+import { ShieldCheckIcon, DeviceMobileIcon, FileTextIcon, UserIcon } from "@/components/icons";
 
 export default function AccountSettingsPage() {
   const router = useRouter();
@@ -59,8 +60,9 @@ export default function AccountSettingsPage() {
               <span style={{ color: "var(--muted)", fontSize: "14px" }}>{user.email}</span>
             </div>
             <div style={{ marginLeft: "auto" }}>
-              <span className="status-badge status-active">
-                ✓ Account Active
+              <span className="status-badge status-active flex items-center gap-1">
+                <ShieldCheckIcon className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Account Active</span>
               </span>
             </div>
           </div>
@@ -92,10 +94,25 @@ export default function AccountSettingsPage() {
           </h3>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
             <Link
+              href="/profile"
+              className="quick-link-card"
+            >
+              <div className="creator-avatar" style={{ width: "40px", height: "40px", background: "var(--surface-subtle)", color: "var(--text)", border: "1px solid var(--border)" }}>
+                <UserIcon className="w-5 h-5" />
+              </div>
+              <div>
+                <strong>User Profile &amp; Password</strong>
+                <p>View full credentials and update password with OTP verification.</p>
+              </div>
+            </Link>
+
+            <Link
               href="/account/sessions"
               className="quick-link-card"
             >
-              <div style={{ fontSize: "24px" }}>📱</div>
+              <div className="creator-avatar" style={{ width: "40px", height: "40px", background: "var(--surface-subtle)", color: "var(--text)", border: "1px solid var(--border)" }}>
+                <DeviceMobileIcon className="w-5 h-5" />
+              </div>
               <div>
                 <strong>Active Sessions &amp; Devices</strong>
                 <p>View currently connected devices and revoke unauthorized tokens.</p>
@@ -106,7 +123,9 @@ export default function AccountSettingsPage() {
               href="/my-pastes"
               className="quick-link-card"
             >
-              <div style={{ fontSize: "24px" }}>📋</div>
+              <div className="creator-avatar" style={{ width: "40px", height: "40px", background: "var(--surface-subtle)", color: "var(--text)", border: "1px solid var(--border)" }}>
+                <FileTextIcon className="w-5 h-5" />
+              </div>
               <div>
                 <strong>My Pastes Dashboard</strong>
                 <p>Manage, share, and review stats on all your created pastes.</p>

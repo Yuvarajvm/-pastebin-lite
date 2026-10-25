@@ -19,7 +19,8 @@ export async function proxy(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
     const isProtectedRoute =
       pathname.startsWith("/my-pastes") ||
-      pathname.startsWith("/account");
+      pathname.startsWith("/account") ||
+      pathname.startsWith("/profile");
 
     if (isLoginRedirect && !isProtectedRoute) {
       return NextResponse.next();

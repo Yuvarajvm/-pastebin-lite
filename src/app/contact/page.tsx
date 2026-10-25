@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/site-header";
 import { ContactForm } from "@/components/contact-form";
 import type { Metadata } from "next";
+import { MailIcon, GitHubIcon, CodeIcon, BugIcon, ExternalLinkIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Contact Us — Pastebin Lite",
@@ -32,7 +33,9 @@ export default function ContactPage() {
 
               <div className="contact-channels">
                 <div className="channel-item">
-                  <div className="channel-icon">✉️</div>
+                  <div className="channel-icon">
+                    <MailIcon className="w-4 h-4 text-accent" />
+                  </div>
                   <div>
                     <span className="channel-label">Direct Email</span>
                     <a href="mailto:yuvarajuab@gmail.com" className="channel-value">
@@ -42,46 +45,55 @@ export default function ContactPage() {
                 </div>
 
                 <div className="channel-item">
-                  <div className="channel-icon">🐙</div>
+                  <div className="channel-icon">
+                    <GitHubIcon className="w-4 h-4 text-accent" />
+                  </div>
                   <div>
                     <span className="channel-label">GitHub Profile</span>
                     <a
                       href="https://github.com/Yuvarajvm"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="channel-value"
+                      className="channel-value flex items-center gap-1"
                     >
-                      github.com/Yuvarajvm ↗
+                      <span>github.com/Yuvarajvm</span>
+                      <ExternalLinkIcon className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 </div>
 
                 <div className="channel-item">
-                  <div className="channel-icon">📁</div>
+                  <div className="channel-icon">
+                    <CodeIcon className="w-4 h-4 text-accent" />
+                  </div>
                   <div>
                     <span className="channel-label">GitHub Repository</span>
                     <a
                       href="https://github.com/Yuvarajvm/-pastebin-lite"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="channel-value"
+                      className="channel-value flex items-center gap-1"
                     >
-                      Yuvarajvm/-pastebin-lite ↗
+                      <span>Yuvarajvm/-pastebin-lite</span>
+                      <ExternalLinkIcon className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 </div>
 
                 <div className="channel-item">
-                  <div className="channel-icon">🐛</div>
+                  <div className="channel-icon">
+                    <BugIcon className="w-4 h-4 text-accent" />
+                  </div>
                   <div>
                     <span className="channel-label">Public Bug Tracker</span>
                     <a
                       href="https://github.com/Yuvarajvm/-pastebin-lite/issues"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="channel-value"
+                      className="channel-value flex items-center gap-1"
                     >
-                      Open a GitHub Issue ↗
+                      <span>Open a GitHub Issue</span>
+                      <ExternalLinkIcon className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 </div>
