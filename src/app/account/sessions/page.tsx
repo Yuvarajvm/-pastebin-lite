@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { authClient } from "@/lib/neon-auth/client";
+import { DeleteAccountModal } from "@/components/delete-account-modal";
 
 interface ActiveSession {
   id: string;
@@ -23,6 +24,7 @@ export default function AccountSessionsPage() {
   const [sessions, setSessions] = useState<ActiveSession[] | null>(null);
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [revokingOthers, setRevokingOthers] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refreshIndex, setRefreshIndex] = useState(0);
@@ -290,6 +292,31 @@ export default function AccountSessionsPage() {
             )}
           </div>
         </div>
+
+        {/* Danger Zone: Account Soft Deletion */}
+        <div className="danger-zone-card">
+          <div className="danger-zone-header">
+            <div>
+              <h3>Danger Zone</h3>
+              <p>
+                Permanently deactivate your account and revoke all active sessions. Anti-abuse controls prevent re-registering to claim duplicate free-trial benefits.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="danger-button-outline"
+            >
+              Delete account
+            </button>
+          </div>
+        </div>
+
+        <DeleteAccountModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          userEmail={session?.user?.email}
+        />
       </main>
     </>
   );

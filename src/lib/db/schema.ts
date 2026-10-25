@@ -1,4 +1,4 @@
-import { check, index, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, check, index, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const users = pgTable("users", {
@@ -6,7 +6,9 @@ export const users = pgTable("users", {
   username: varchar("username", { length: 32 }).notNull().unique(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   passwordHash: text("password_hash").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow()
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  trialClaimed: boolean("trial_claimed").notNull().default(false)
 });
 
 export const sessions = pgTable("sessions", {
@@ -17,6 +19,26 @@ export const sessions = pgTable("sessions", {
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow()
 });
+
+/**
+ * Tombstone record created when an account is soft deleted.
+ * Preserves normalized email and trial status permanently so that
+ * deleting and re-registering cannot reset free trial quotas.
+ */
+export const accountDeletions = pgTable(
+  "account_deletions",
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
+    userId: text("user_id"),
+    email: varchar("email", { length: 255 }).notNull(),
+    normalizedEmail: varchar("normalized_email", { length: 255 }).notNull(),
+    trialClaimed: boolean("trial_claimed").notNull().default(true),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }).notNull().defaultNow()
+  },
+  (table) => [
+    index("account_deletions_normalized_email_idx").on(table.normalizedEmail)
+  ]
+);
 
 export const pastes = pgTable(
   "pastes",
@@ -42,4 +64,6 @@ export const pastes = pgTable(
 
 export type User = typeof users.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
+export type AccountDeletion = typeof accountDeletions.$inferSelect;
 export type Paste = typeof pastes.$inferSelect;
+

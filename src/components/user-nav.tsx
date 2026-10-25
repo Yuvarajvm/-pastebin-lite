@@ -42,19 +42,19 @@ export function UserNav() {
 
     return (
       <div className="account-nav logged-in">
-        <Link href="/my-pastes" className="user-badge" title="View your pastes">
+        <Link href="/account" className="user-badge" title="Account settings & security">
           <span className="user-avatar" aria-hidden="true">
             {avatarLetter}
           </span>
           <span className="username-text">{displayName}</span>
         </Link>
         <Link
-          href="/account/sessions"
+          href="/account"
           className="login-link"
           style={{ fontSize: "12px", padding: "6px 8px" }}
-          title="Manage active devices and sessions"
+          title="Account settings"
         >
-          Sessions
+          Settings
         </Link>
         <button
           type="button"

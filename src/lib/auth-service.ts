@@ -36,7 +36,9 @@ export function sanitizeUser(user: User): SafeUser {
     id: user.id,
     username: user.username,
     email: user.email,
-    createdAt: user.createdAt instanceof Date ? user.createdAt : new Date(user.createdAt)
+    createdAt: user.createdAt instanceof Date ? user.createdAt : new Date(user.createdAt),
+    deletedAt: user.deletedAt ? (user.deletedAt instanceof Date ? user.deletedAt : new Date(user.deletedAt)) : null,
+    trialClaimed: Boolean(user.trialClaimed)
   };
 }
 
@@ -129,6 +131,8 @@ export async function validateSession(token: string): Promise<{ user: SafeUser; 
     username: string;
     email: string;
     userCreatedAt: Date | string;
+    userDeletedAt: Date | string | null;
+    userTrialClaimed: boolean | null;
   };
 
   const rows = await db.execute<JoinedRow>(sql`
@@ -140,11 +144,14 @@ export async function validateSession(token: string): Promise<{ user: SafeUser; 
       u.id AS "userId",
       u.username,
       u.email,
-      u.created_at AS "userCreatedAt"
+      u.created_at AS "userCreatedAt",
+      u.deleted_at AS "userDeletedAt",
+      u.trial_claimed AS "userTrialClaimed"
     FROM sessions s
     JOIN users u ON s.user_id = u.id
     WHERE s.id = ${token}
       AND s.expires_at > NOW()
+      AND u.deleted_at IS NULL
     LIMIT 1
   `);
 
@@ -156,7 +163,9 @@ export async function validateSession(token: string): Promise<{ user: SafeUser; 
       id: row.userId,
       username: row.username,
       email: row.email,
-      createdAt: row.userCreatedAt instanceof Date ? row.userCreatedAt : new Date(row.userCreatedAt)
+      createdAt: row.userCreatedAt instanceof Date ? row.userCreatedAt : new Date(row.userCreatedAt),
+      deletedAt: row.userDeletedAt ? (row.userDeletedAt instanceof Date ? row.userDeletedAt : new Date(row.userDeletedAt)) : null,
+      trialClaimed: Boolean(row.userTrialClaimed)
     },
     session: {
       id: row.sessionId,
@@ -214,7 +223,9 @@ export async function getCurrentUser(): Promise<SafeUser | null> {
         id: u.id,
         username: u.name || (u.email ? u.email.split("@")[0] : "user"),
         email: u.email || "",
-        createdAt: new Date(u.createdAt || Date.now())
+        createdAt: new Date(u.createdAt || Date.now()),
+        deletedAt: null,
+        trialClaimed: false
       };
     }
   } catch {
