@@ -99,6 +99,38 @@ export async function verifyOtpCode(userId: string, email: string, code: string)
     // Continue
   }
 
+  // 3. Fallback verification against Neon Auth upstream email OTP service
+  try {
+    const baseUrl =
+      process.env.NEON_AUTH_BASE_URL ||
+      process.env.NEXT_PUBLIC_NEON_AUTH_BASE_URL ||
+      "https://ep-fancy-sun-az01xegk.neonauth.c-3.ap-southeast-1.aws.neon.tech/neondb/auth";
+    const trustedOrigin =
+      process.env.NEON_AUTH_TRUSTED_ORIGIN || "https://pastebin-lite-rho-seven.vercel.app";
+
+    const res = await fetch(`${baseUrl}/email-otp/check-verification-otp`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        origin: trustedOrigin
+      },
+      body: JSON.stringify({
+        email: canonicalEmail,
+        type: "forget-password",
+        otp: cleanCode
+      })
+    });
+
+    if (res.ok) {
+      const json = await res.json().catch(() => null);
+      if (json?.success) {
+        return true;
+      }
+    }
+  } catch {
+    // Neon Auth check failed
+  }
+
   return false;
 }
 
