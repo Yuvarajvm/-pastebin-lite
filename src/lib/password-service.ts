@@ -57,9 +57,78 @@ export async function generateAndStoreOtp(userId: string, email: string): Promis
   return otp;
 }
 
+export async function requestEmailOtp(email: string): Promise<{ success: boolean; message: string }> {
+  const canonicalEmail = normalizeEmail(email);
+  const baseUrl =
+    process.env.NEON_AUTH_BASE_URL ||
+    process.env.NEXT_PUBLIC_NEON_AUTH_BASE_URL ||
+    "https://ep-fancy-sun-az01xegk.neonauth.c-3.ap-southeast-1.aws.neon.tech/neondb/auth";
+  const trustedOrigin =
+    process.env.NEON_AUTH_TRUSTED_ORIGIN || "https://pastebin-lite-rho-seven.vercel.app";
+
+  try {
+    const res = await fetch(`${baseUrl}/email-otp/send-verification-otp`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        origin: trustedOrigin
+      },
+      body: JSON.stringify({
+        email: canonicalEmail,
+        type: "forget-password"
+      })
+    });
+
+    if (!res.ok) {
+      const errJson = await res.json().catch(() => null);
+      throw new PasswordError(errJson?.message || "Failed to send verification email. Please try again.");
+    }
+  } catch (err) {
+    if (err instanceof PasswordError) throw err;
+    throw new PasswordError("Unable to dispatch verification email. Please try again.");
+  }
+
+  return {
+    success: true,
+    message: `A 6-digit verification code has been sent to ${email}. Please check your email inbox.`
+  };
+}
+
 export async function verifyOtpCode(userId: string, email: string, code: string): Promise<boolean> {
   const cleanCode = code.trim();
   const canonicalEmail = normalizeEmail(email);
+
+  // 1. First, verify against Neon Auth upstream email OTP service (the code sent to user's real email)
+  try {
+    const baseUrl =
+      process.env.NEON_AUTH_BASE_URL ||
+      process.env.NEXT_PUBLIC_NEON_AUTH_BASE_URL ||
+      "https://ep-fancy-sun-az01xegk.neonauth.c-3.ap-southeast-1.aws.neon.tech/neondb/auth";
+    const trustedOrigin =
+      process.env.NEON_AUTH_TRUSTED_ORIGIN || "https://pastebin-lite-rho-seven.vercel.app";
+
+    const res = await fetch(`${baseUrl}/email-otp/check-verification-otp`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        origin: trustedOrigin
+      },
+      body: JSON.stringify({
+        email: canonicalEmail,
+        type: "forget-password",
+        otp: cleanCode
+      })
+    });
+
+    if (res.ok) {
+      const json = await res.json().catch(() => null);
+      if (json?.success) {
+        return true;
+      }
+    }
+  } catch {
+    // Upstream check fallback
+  }
 
   // Check memory cache first
   const cached = otpMemoryCache.get(userId) || otpMemoryCache.get(canonicalEmail);
@@ -97,38 +166,6 @@ export async function verifyOtpCode(userId: string, email: string, code: string)
     }
   } catch {
     // Continue
-  }
-
-  // 3. Fallback verification against Neon Auth upstream email OTP service
-  try {
-    const baseUrl =
-      process.env.NEON_AUTH_BASE_URL ||
-      process.env.NEXT_PUBLIC_NEON_AUTH_BASE_URL ||
-      "https://ep-fancy-sun-az01xegk.neonauth.c-3.ap-southeast-1.aws.neon.tech/neondb/auth";
-    const trustedOrigin =
-      process.env.NEON_AUTH_TRUSTED_ORIGIN || "https://pastebin-lite-rho-seven.vercel.app";
-
-    const res = await fetch(`${baseUrl}/email-otp/check-verification-otp`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        origin: trustedOrigin
-      },
-      body: JSON.stringify({
-        email: canonicalEmail,
-        type: "forget-password",
-        otp: cleanCode
-      })
-    });
-
-    if (res.ok) {
-      const json = await res.json().catch(() => null);
-      if (json?.success) {
-        return true;
-      }
-    }
-  } catch {
-    // Neon Auth check failed
   }
 
   return false;

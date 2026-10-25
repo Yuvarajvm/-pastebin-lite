@@ -17,7 +17,6 @@ export function PasswordChangeForm({ userEmail }: PasswordChangeFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const [activeOtpPreview, setActiveOtpPreview] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -35,11 +34,7 @@ export function PasswordChangeForm({ userEmail }: PasswordChangeFormProps) {
         throw new Error(data.error || "Failed to send verification code.");
       }
       setOtpSent(true);
-      if (data.previewCode) {
-        setActiveOtpPreview(data.previewCode);
-        setOtpCode(data.previewCode);
-      }
-      setStatusMessage(data.message || "A 6-digit verification code has been dispatched.");
+      setStatusMessage(data.message || "A 6-digit verification code has been sent to your email.");
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : "Failed to send verification code.");
     } finally {
@@ -195,38 +190,14 @@ export function PasswordChangeForm({ userEmail }: PasswordChangeFormProps) {
               type="text"
               required
               maxLength={6}
-              placeholder="Enter 6-digit code"
+              placeholder="Enter 6-digit code from email"
               value={otpCode}
               onChange={(e) => setOtpCode(e.target.value)}
               className="contact-input font-mono tracking-widest text-center"
             />
             <p className="field-hint" style={{ marginTop: "4px" }}>
-              Code sent to {userEmail || "your registered email"}.
+              Please enter the 6-digit code sent to {userEmail || "your registered email"}.
             </p>
-            {activeOtpPreview && (
-              <div
-                className="notice notice-info flex items-center justify-between"
-                style={{ marginTop: "8px", fontSize: "12px", padding: "8px 12px" }}
-              >
-                <div className="flex items-center gap-2">
-                  <KeyIcon className="w-4 h-4 text-accent flex-shrink-0" />
-                  <span>
-                    One-Time Code:{" "}
-                    <strong className="font-mono text-accent tracking-widest" style={{ fontSize: "14px" }}>
-                      {activeOtpPreview}
-                    </strong>
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setOtpCode(activeOtpPreview)}
-                  className="secondary-button"
-                  style={{ fontSize: "11px", padding: "2px 8px" }}
-                >
-                  Fill Code
-                </button>
-              </div>
-            )}
           </div>
         )}
 

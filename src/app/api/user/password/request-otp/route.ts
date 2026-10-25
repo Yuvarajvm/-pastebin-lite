@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/neon-auth/server";
 import { noStoreHeaders } from "@/lib/api";
-import { generateAndStoreOtp } from "@/lib/password-service";
-import { sendOtpEmail } from "@/lib/email-service";
+import { requestEmailOtp } from "@/lib/password-service";
 
 export const dynamic = "force-dynamic";
 
@@ -23,23 +22,12 @@ export async function POST() {
   }
 
   try {
-    const otp = await generateAndStoreOtp(user.id, user.email);
-
-    // Dispatch email asynchronously through SMTP or Neon Auth shared provider
-    const dispatchResult = await sendOtpEmail({
-      toEmail: user.email,
-      otpCode: otp
-    });
-
-    const statusNote = dispatchResult.sent
-      ? `A 6-digit one-time code has been sent to ${user.email}. Check your inbox and spam folder.`
-      : `Verification code generated for ${user.email}. Code expires in 10 minutes.`;
+    const result = await requestEmailOtp(user.email);
 
     return NextResponse.json(
       {
         success: true,
-        message: statusNote,
-        previewCode: otp
+        message: result.message
       },
       { headers: noStoreHeaders }
     );
